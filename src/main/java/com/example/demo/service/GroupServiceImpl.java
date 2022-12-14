@@ -2,13 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.mapper.GroupMapper;
 import com.example.demo.repository.GroupRepository;
-import com.example.demo.dto.AddGroupRequestDTO;
-import com.example.demo.dto.GetGroupRequestDTO;
+import com.example.demo.dto.AddGroupRequestBody;
+import com.example.demo.dto.GetGroupResponseBody;
 import com.example.demo.entity.Group;
-import com.example.demo.exception_handling.NoCorrectDataDTO;
 import com.example.demo.exception_handling.NoSuchEntityException;
+import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -22,38 +23,26 @@ public class GroupServiceImpl implements GroupService {
     private final GroupMapper groupMapper;
 
     @Override
-    public void addGroup(AddGroupRequestDTO groupRequestDto) {
-        if (!groupRequestDto.getNumber().equals("")) {
-            groupRepository.save(groupMapper.getGroup(groupRequestDto));
-        }else {
-            throw new NoCorrectDataDTO("Params not correct");
-        }
-
-
+    public void addGroup(AddGroupRequestBody groupRequestDto) {
+        groupRepository.save(groupMapper.getGroup(groupRequestDto));
     }
 
     @Override
-    public GetGroupRequestDTO getGroupFromDTO(Integer id) {
-        Optional<Group> group = groupRepository.findById(id);
-        if (group.isPresent()) {
-            return groupMapper.getDTO(group.get());
-        } else {
-            throw new NoSuchEntityException("No correct group_id = " + id);
-        }
+    public GetGroupResponseBody getGroupRequestBody(Integer groupID) {
+        Optional<Group> group = groupRepository.findById(groupID);
+        Preconditions.checkArgument(group.isPresent(), new NoSuchEntityException("Group by id = " + groupID + " not found"));
+        return groupMapper.getGroupResponseBody(group.get());
     }
 
     @Override
-    public List<GetGroupRequestDTO> getAllGroupsDTO() {
-        return groupMapper.getDTOs(groupRepository.findAll());
+    public List<GetGroupResponseBody> getListGroupResponseBody() {
+        return groupMapper.getListGroupResponseBody(groupMapper.getGroupsDomainList(groupRepository.findAll()));
     }
 
     @Override
-    public Group getGroup(Integer id) {
-       Optional<Group> groupOptional = groupRepository.findById(id);
-       if (groupOptional.isPresent()){
-           return groupOptional.get();
-       }else {
-           throw new NoSuchEntityException("No corrected groupID = " + id);
-       }
+    public Group getGroup(Integer groupID) {
+        Optional<Group> group = groupRepository.findById(groupID);
+        Preconditions.checkArgument(group.isPresent(), new NoSuchEntityException("Group by id = " + groupID + " not found"));
+        return group.get();
     }
 }

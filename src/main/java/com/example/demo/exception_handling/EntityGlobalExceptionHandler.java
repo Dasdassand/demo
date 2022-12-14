@@ -15,8 +15,9 @@ public class EntityGlobalExceptionHandler {
         return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
     }
 
+
     @ExceptionHandler
-    public ResponseEntity<EntityIncorrectData> handleException(NoCorrectDataDTO ex) {
+    public ResponseEntity<EntityIncorrectData> handleException(IllegalArgumentException ex) {
         EntityIncorrectData data = new EntityIncorrectData();
         data.setInfo(ex.getMessage());
         return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);

@@ -1,14 +1,16 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.AddStudentRequestDTO;
-import com.example.demo.dto.GetStudentRequestDTO;
+import com.example.demo.dto.AddStudentRequestBody;
+import com.example.demo.dto.GetStudentResponseBody;
+
 import java.util.List;
 
 public interface StudentService {
-    List<GetStudentRequestDTO> getAllStudentsDTOFromGroupID(Integer id);
-    void addStudent(AddStudentRequestDTO student,Integer id);
+    List<GetStudentResponseBody> getAllStudentsResponseBodyByGroupID(Integer id);
 
-    void remove(Integer id);
+    void addStudent(AddStudentRequestBody student);
+
+    StatusOperation remove(Integer id);
 
 
 }

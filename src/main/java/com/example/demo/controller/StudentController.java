@@ -1,13 +1,13 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.AddStudentRequestDTO;
-import com.example.demo.dto.GetStudentRequestDTO;
+import com.example.demo.dto.AddStudentRequestBody;
+import com.example.demo.dto.GetStudentResponseBody;
+import com.example.demo.service.StatusOperation;
 import com.example.demo.service.StudentService;
+import com.google.common.base.Preconditions;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @RestController
@@ -17,24 +17,22 @@ public class StudentController {
 
     private final StudentService service;
 
-    @GetMapping(path = "/{id}")
-    public List<GetStudentRequestDTO> getStudents(@PathVariable Integer id) {
-        return service.getAllStudentsDTOFromGroupID(id);
+    @GetMapping(path = "/{groupID}")
+    public List<GetStudentResponseBody> getStudents(@PathVariable Integer groupID) {
+        return service.getAllStudentsResponseBodyByGroupID(groupID);
     }
 
-    @PostMapping(path = "/{id}")
-    public void addStudent(@RequestBody AddStudentRequestDTO student, @PathVariable Integer id) {
-        service.addStudent(student, id);
+    @PostMapping(path = "/{groupID}")
+    public void addStudent(@RequestBody AddStudentRequestBody student, @PathVariable Integer groupID) {
+        Preconditions.checkArgument(student != null, new IllegalArgumentException("Student is empty"));
+        Preconditions.checkArgument(groupID.describeConstable().isPresent(), new IllegalArgumentException("Group id is empty"));
+        student.setGroupID(groupID);
+        service.addStudent(student);
     }
 
     @DeleteMapping("/{studentID}")
-    public boolean removeStudent(@PathVariable String studentID) {
-        try {
-            service.remove(Integer.valueOf(studentID));
-            return true;
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-        }
-        return false;
+    public StatusOperation removeStudent(@PathVariable Integer studentID) {
+        Preconditions.checkArgument(studentID.describeConstable().isPresent(), new IllegalArgumentException("Student id is empty"));
+        return service.remove(studentID);
     }
 }

@@ -1,14 +1,13 @@
 package com.example.demo.dto;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class GetGroupRequestDTO {
-    private Integer id;
-    private String number;
-    private Integer countStudent;
+@AllArgsConstructor
+public class AddGroupRequestBody {
+    private String number = "";
 }
