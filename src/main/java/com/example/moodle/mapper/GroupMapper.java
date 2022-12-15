@@ -25,7 +25,7 @@ public interface GroupMapper {
     GetGroupResponseBody getGroupResponseBody(Group group);
 
 
-    @Mapping(target = "studentDomainList", expression = "java(new StudentMapperImpl().getStudentsDomain(group.getStudents()))")
+    @Mapping(target = "studentDomainList", expression = "java(new StudentMapperImpl().getStudentsDomainList(group.getStudents()))")
     GroupDomain getGroupDomain(Group group);
 
     List<GroupDomain> getGroupsDomainList(List<Group> groups);
